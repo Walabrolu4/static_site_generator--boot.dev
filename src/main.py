@@ -3,7 +3,7 @@ from textnode import *
 from htmlnode import HTMLNode
 from leafnode import LeafNode
 from parentnode import ParentNode
-from node_transformer import text_node_to_html_node , split_nodes_by_delimiter , split_nodes_by_priority
+from node_transformer import text_node_to_html_node , split_nodes_by_delimiter , split_nodes_by_priority , extract_markdown_images , extract_markdown_links
 def main():
 
   text_node = TextNode("This is a text node", TextType.BOLD, "https://www.boot.dev")
@@ -31,5 +31,14 @@ def main():
   split_nodes = split_nodes_by_priority([text_node2])
   print(split_nodes)
 
+  print ("--------------------------------------")
+  text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+  print(extract_markdown_images(text))
+  # [("rick roll", "https://i.imgur.com/aKaOqIh.gif"), ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg")]
+
+  print ("--------------------------------------")
+  text = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+  print(extract_markdown_links(text))
+  # [("to boot dev", "https://www.boot.dev"), ("to youtube", "https://www.youtube.com/@bootdotdev")]
 
 main()

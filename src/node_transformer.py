@@ -1,5 +1,6 @@
 from textnode import *
 from leafnode import LeafNode
+import re
 def text_node_to_html_node(text_node):
   match (text_node.text_type):
     case TextType.TEXT:
@@ -79,6 +80,17 @@ def append_delimited_list(delimited_list,text_type):
     count += 1
   return new_nodes
 
+def extract_markdown_images(text):
+  parsed_text = re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)" , text)
+  if len(parsed_text) == 0:
+    raise Exception("No Images found")
+  return parsed_text
+
+def extract_markdown_links(text):
+  parsed_text = re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)",text)
+  if len(parsed_text) == 0:
+    raise Exception("No Links found")
+  return parsed_text
 
 '''
 TEXT  (nothing)
