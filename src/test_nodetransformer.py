@@ -1,6 +1,6 @@
 import unittest
 from textnode import *
-from node_transformer import text_node_to_html_node
+from node_transformer import text_node_to_html_node , split_nodes_by_delimiter , split_nodes_by_priority
 
 
 class TestNodeTransformer(unittest.TestCase):
@@ -25,3 +25,20 @@ class TestNodeTransformer(unittest.TestCase):
     converted_node = text_node_to_html_node(text_node)
     assert_str = "<img src=\"imgs/dandy.png\"alt=\"This is a image\"></img>"
     self.assertEqual(converted_node.to_html(),assert_str)
+
+  def test_simple_delimiter_transfrom(self):
+    text_node = TextNode("This should be **split** and *stuff*",TextType.TEXT)
+    split_nodes = split_nodes_by_delimiter([text_node],"**",TextType.BOLD)
+    assert_list = [TextNode("This should be ", TextType.TEXT, None), TextNode("split", TextType.BOLD, None), TextNode(" and *stuff*", TextType.TEXT, None)]
+    self.assertEqual(split_nodes,assert_list)
+
+  def test_italics_delimiter_transform(self):
+    text_node = TextNode("This should be **split** and *stuff*",TextType.TEXT)
+    split_nodes = split_nodes_by_priority([text_node])
+    assert_list = [TextNode("This should be ", TextType.TEXT , None), TextNode("split", TextType.BOLD, None), TextNode(" and ", TextType.TEXT, None), TextNode("stuff", TextType.ITALIC, None), TextNode("", TextType.TEXT, None)]
+    self.assertEqual(split_nodes,assert_list)
+  
+  def test_split_nodes_raise_error(self):
+    text_node = TextNode("This should be **split** and *stuff*",TextType.TEXT)
+    split_nodes = split_nodes_by_delimiter([text_node],"**",TextType.BOLD)
+    self.assertRaises(Exception)
