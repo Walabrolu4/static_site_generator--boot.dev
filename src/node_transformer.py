@@ -19,6 +19,7 @@ def text_node_to_html_node(text_node):
       raise Exception("Not a valid text type")
 
 
+
 def split_nodes_by_priority(old_nodes):
     # Define delimiter processing order
     priority = [
@@ -78,6 +79,53 @@ def append_delimited_list(delimited_list,text_type):
     else:
       new_nodes.append(TextNode(text,TextType.TEXT))
     count += 1
+  return new_nodes
+
+def split_nodes_link(old_nodes):
+  if not old_nodes:
+    raise Exception("node list cannot be empty!")
+
+  new_nodes = list()
+  for node in old_nodes:
+    if node.text_type != TextType.TEXT:
+      new_nodes.append(node)
+
+    else:
+      remaining_text = node.text
+      extracted_links = extract_markdown_links(node.text)
+      if extracted_links:
+        for link_text, link_url in extracted_links:
+          section = remaining_text.split(f"[{link_text}]({link_url})",1)
+          if section[0] != "":
+            new_nodes.append(TextNode(section[0],TextType.TEXT))
+          new_nodes.append(TextNode(f"{link_text}",TextType.LINK,f"{link_url}"))
+          remaining_text = section[1]
+      else:
+        new_nodes.append(node)
+  return new_nodes
+    
+
+def split_nodes_image(old_nodes):
+  if not old_nodes:
+    raise Exception("node list cannot be empty!")
+  
+  new_nodes = list()
+  for node in old_nodes:
+    if node.text_type != TextType.TEXT:
+      new_nodes.append(node)
+
+    else:
+      remaining_text = node.text
+      extracted_images = extract_markdown_images(node.text)
+      if extracted_images:
+        for img_alt , img_link in extracted_images:
+          section = remaining_text.split(f"![{img_alt}]({img_link})",1)
+          if section[0] != "":
+            new_nodes.append(TextNode(section[0],TextType.TEXT))
+          new_nodes.append(TextNode(f"{img_alt}",TextType.IMAGE,f"{img_link}"))
+          remaining_text = section[1]
+      else:
+        new_nodes.append(node)
   return new_nodes
 
 def extract_markdown_images(text):
