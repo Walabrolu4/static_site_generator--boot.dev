@@ -3,7 +3,9 @@ from textnode import *
 from htmlnode import HTMLNode
 from leafnode import LeafNode
 from parentnode import ParentNode
-from node_transformer import text_node_to_html_node , split_nodes_by_delimiter , split_nodes_by_priority , extract_markdown_images , extract_markdown_links , split_nodes_link , split_nodes_image
+from node_transformer import text_node_to_html_node , split_nodes_by_delimiter , split_nodes_by_priority , extract_markdown_images , extract_markdown_links , split_nodes_link , split_nodes_image, text_to_textnodes
+from block_transformer import markdown_to_blocks
+
 def main():
 
   text_node = TextNode("This is a text node", TextType.BOLD, "https://www.boot.dev")
@@ -49,6 +51,15 @@ def main():
   img_node = TextNode("Start ![img1](img_url1) middle ![img2](img_url2) end", TextType.TEXT)
   print(split_nodes_image([img_node]))
 
+  print ("--------------------------------------")  
+  text_to_convert = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+  converted_nodes = text_to_textnodes(text_to_convert)
+  print(converted_nodes)
+
+  print ("--------------------------------------")    
+  markdown_text  ="# This is a heading\n\nThis is a paragraph of text. It has some **bold** and *italic* words inside of it.\n\n* This is the first list item in a list block\n* This is a list item\n* This is another list item"
+  #markdown_text = "Header\n\n   \n\nParagraph"  # Has a block with only spaces
+  print(markdown_to_blocks(markdown_text))
 
 
 main()

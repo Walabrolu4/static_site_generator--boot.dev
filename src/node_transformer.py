@@ -18,7 +18,16 @@ def text_node_to_html_node(text_node):
     case _:
       raise Exception("Not a valid text type")
 
+def text_to_textnodes(text):
+  text_list = list()
+  text_node = TextNode(text,TextType.TEXT)
+  text_list.append(text_node)
 
+  text_list = split_nodes_link(text_list)
+  text_list = split_nodes_image(text_list)
+
+  text_list = split_nodes_by_priority(text_list)
+  return text_list
 
 def split_nodes_by_priority(old_nodes):
     # Define delimiter processing order
@@ -100,6 +109,8 @@ def split_nodes_link(old_nodes):
             new_nodes.append(TextNode(section[0],TextType.TEXT))
           new_nodes.append(TextNode(f"{link_text}",TextType.LINK,f"{link_url}"))
           remaining_text = section[1]
+        if remaining_text != "":
+          new_nodes.append(TextNode(remaining_text,TextType.TEXT))
       else:
         new_nodes.append(node)
   return new_nodes
@@ -124,20 +135,18 @@ def split_nodes_image(old_nodes):
             new_nodes.append(TextNode(section[0],TextType.TEXT))
           new_nodes.append(TextNode(f"{img_alt}",TextType.IMAGE,f"{img_link}"))
           remaining_text = section[1]
+        if remaining_text != "":
+          new_nodes.append(TextNode(remaining_text,TextType.TEXT))
       else:
         new_nodes.append(node)
   return new_nodes
 
 def extract_markdown_images(text):
   parsed_text = re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)" , text)
-  if len(parsed_text) == 0:
-    raise Exception("No Images found")
   return parsed_text
 
 def extract_markdown_links(text):
   parsed_text = re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)",text)
-  if len(parsed_text) == 0:
-    raise Exception("No Links found")
   return parsed_text
 
 '''

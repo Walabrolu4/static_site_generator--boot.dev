@@ -1,6 +1,6 @@
 import unittest
 from textnode import *
-from node_transformer import text_node_to_html_node, split_nodes_by_delimiter, split_nodes_by_priority, extract_markdown_links, extract_markdown_images
+from node_transformer import text_node_to_html_node, split_nodes_by_delimiter, split_nodes_by_priority, extract_markdown_links, extract_markdown_images , split_nodes_image, split_nodes_link , text_to_textnodes
 
 
 class TestNodeTransformer(unittest.TestCase):
@@ -57,12 +57,41 @@ class TestNodeTransformer(unittest.TestCase):
  
   def test_extract_image_exception(self):
     text = "This"
-    with self.assertRaises(Exception):
-      parsed_text = extract_markdown_images(text)
+    parsed_text = extract_markdown_images(text)
+    self.assertEqual(parsed_text,[])
 
   def test_extract_link_exception(self):
     text = "This"
-    with self.assertRaises(Exception):
-      parsed_text = extract_markdown_links(text)
+    parsed_text = extract_markdown_links(text)
+    self.assertEqual(parsed_text,[])
 
+  def test_text_node_to_link_simple(self): 
+    link_node = TextNode("Start [link1](url1) middle [link2](url2) end", TextType.TEXT)
+    converted_nodes = split_nodes_link([link_node])
+    self.assertEqual(converted_nodes[0].text,"Start ")
+    self.assertEqual(converted_nodes[1].text,"link1")
+    self.assertEqual(converted_nodes[3].url, "url2")
+  
+  def test_text_node_to_link_no_link(self):
+    link_node = TextNode("Hello World",TextType.TEXT)
+    converted_nodes = split_nodes_link([link_node])
+    self.assertEqual(converted_nodes[0].text, "Hello World")
 
+  def test_text_node_to_image_simple(self): 
+    link_node = TextNode("Start ![link1](url1) middle ![link2](url2) end", TextType.TEXT)
+    converted_nodes = split_nodes_image([link_node])
+    self.assertEqual(converted_nodes[0].text,"Start ")
+    self.assertEqual(converted_nodes[1].text,"link1")
+    self.assertEqual(converted_nodes[3].url, "url2")
+  
+  def test_text_node_to_image_no_link(self):
+    link_node = TextNode("Hello World",TextType.TEXT)
+    converted_nodes = split_nodes_image([link_node])
+    self.assertEqual(converted_nodes[0].text, "Hello World")
+
+  def test_text_to_textnode(self):
+    text_to_convert = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+    converted_nodes = text_to_textnodes(text_to_convert)
+    self.assertEqual(converted_nodes[0].text,"This is ")
+    self.assertEqual(converted_nodes[1].text_type,TextType.BOLD)
+    self.assertEqual(converted_nodes[-1].url,"https://boot.dev")
