@@ -4,7 +4,7 @@ from htmlnode import HTMLNode
 from leafnode import LeafNode
 from parentnode import ParentNode
 from node_transformer import text_node_to_html_node , split_nodes_by_delimiter , split_nodes_by_priority , extract_markdown_images , extract_markdown_links , split_nodes_link , split_nodes_image, text_to_textnodes
-from block_transformer import markdown_to_blocks
+from block_transformer import markdown_to_blocks , get_block_type
 
 def main():
 
@@ -59,7 +59,10 @@ def main():
   print ("--------------------------------------")    
   markdown_text  ="# This is a heading\n\nThis is a paragraph of text. It has some **bold** and *italic* words inside of it.\n\n* This is the first list item in a list block\n* This is a list item\n* This is another list item"
   #markdown_text = "Header\n\n   \n\nParagraph"  # Has a block with only spaces
-  print(markdown_to_blocks(markdown_text))
+  markdown_blocks = markdown_to_blocks(markdown_text)
+  print(markdown_blocks)
+  for texts in markdown_blocks:
+    print(get_block_type(texts))
 
 
 main()
