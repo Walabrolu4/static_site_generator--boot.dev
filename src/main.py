@@ -5,9 +5,10 @@ from leafnode import LeafNode
 from parentnode import ParentNode
 from node_transformer import text_node_to_html_node , split_nodes_by_delimiter , split_nodes_by_priority , extract_markdown_images , extract_markdown_links , split_nodes_link , split_nodes_image, text_to_textnodes
 from block_transformer import markdown_to_blocks , get_block_type
+from html_transformer import markdown_to_html_node
 
-def main():
-
+def basic_testing():
+  
   text_node = TextNode("This is a text node", TextType.BOLD, "https://www.boot.dev")
   print(text_node.__repr__())
   print ("--------------------------------------")
@@ -63,6 +64,12 @@ def main():
   print(markdown_blocks)
   for texts in markdown_blocks:
     print(get_block_type(texts))
+
+def main():
+  #basic_testing()
+  markdown = "# My Title\n\nThis is a paragraph with some *italic* and **bold** text.\n\n* First item\n* Second item\n\n> A wise quote"
+  print(markdown_to_html_node(markdown))
+  pass
 
 
 main()
