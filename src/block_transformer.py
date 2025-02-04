@@ -79,12 +79,14 @@ def block_to_HTML_node(text,block_type):
       return ParentNode("pre",[leaf])
     
     case BlockType.QUOTE:
+      text = text[1:]
+      text = text.strip()
       return LeafNode(text,"blockquote")
     
     case BlockType.UO_LIST:
       uo_list = list()
       for line in text.splitlines():
-        line = line[1:]
+        #line = line[1:]
         line = line.strip()
         uo_list.append(LeafNode(line,"li"))
       return (ParentNode("ul",uo_list))

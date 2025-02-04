@@ -77,7 +77,7 @@ def main():
 
   #print(extract_title(markdown))
   copy_static_to_public()
-  generate_page("./content/index.md","./template.html","./public/index.html")
+  generate_pages_recursive("./content","./template.html","./public/")
   pass
 
 

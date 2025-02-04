@@ -9,12 +9,15 @@ def markdown_to_html_node(markdown):
   html_nodes = list()
   for block in markdown_blocks:
     block_type = get_block_type(block)
-    print(block)
+    if block_type == BlockType.UO_LIST:
+        #Remove the list markers before processing inline formatting
+        cleaned_block = "\n".join(line[1:].strip() for line in block.splitlines())
+        block = cleaned_block
     block = text_to_textnodes(block)
     html_content = ""
     for node in block:
       html_content += text_node_to_html_node(node).to_html()
-    print(html_content)
+    #print(html_content)
     html_nodes.append(block_to_HTML_node(html_content,block_type))
   return ParentNode("div",html_nodes)
 
