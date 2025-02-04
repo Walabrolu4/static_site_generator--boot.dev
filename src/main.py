@@ -6,6 +6,9 @@ from parentnode import ParentNode
 from node_transformer import text_node_to_html_node , split_nodes_by_delimiter , split_nodes_by_priority , extract_markdown_images , extract_markdown_links , split_nodes_link , split_nodes_image, text_to_textnodes
 from block_transformer import markdown_to_blocks , get_block_type
 from html_transformer import markdown_to_html_node
+from html_file_handler import *
+
+import os
 
 def basic_testing():
   
@@ -68,7 +71,13 @@ def basic_testing():
 def main():
   #basic_testing()
   markdown = "# My Title\n\nThis is a paragraph with some *italic* and **bold** text.\n\n* First item\n* Second item\n\n> A wise quote"
-  print(markdown_to_html_node(markdown))
+  #print(markdown_to_html_node(markdown))
+
+  #copy_static_to_public()
+
+  #print(extract_title(markdown))
+  copy_static_to_public()
+  generate_page("./content/index.md","./template.html","./public/index.html")
   pass
 
 

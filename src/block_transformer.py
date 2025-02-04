@@ -71,6 +71,10 @@ def block_to_HTML_node(text,block_type):
       return LeafNode(text, f"h{level}")
     
     case BlockType.CODE:
+      text_list = text.splitlines()
+      del text_list[0]
+      del text_list[-1]
+      text = "\n".join(text_list)
       leaf = LeafNode(text,"code")
       return ParentNode("pre",[leaf])
     
